@@ -2,8 +2,8 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 
-import { loadState, saveState } from './utils/persistStore'
-import userReducer from './reducers/userReducer'
+import { loadState, saveState } from './persistStore'
+import userReducer from '../reducers/userReducer'
 
 const rootReducer = combineReducers({
     user: userReducer,

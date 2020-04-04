@@ -1,148 +1,189 @@
-import { Location, Quarter } from '../types'
-import { unit } from '../config'
+import { Location, Quarter, ShapeType, Shape, Rect } from '../types'
+import { unit } from './config'
 
-type DrawShape = (ctx: any, location: Location, quarter?: Quarter) => void
+type GetShapeRect = (location: Location, quarter?: Quarter) => Rect[]
+interface ShapeProps {
+    type: ShapeType
+    quarter: Quarter
+    location: Location
+}
 
-export const drawI: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'cyan'
+const getIShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
         case '1':
         case '3':
-            ctx.fillRect(x, y, 4 * unit, unit)
-            break
-
+            return [{ x, y, sx: 4 * unit, sy: unit }]
         default:
-            ctx.fillRect(x, y, unit, 4 * unit)
-            break
+            return [{ x, y, sx: unit, sy: 4 * unit }]
     }
 }
 
-export const drawO: DrawShape = (ctx, { x, y }) => {
-    ctx.fillStyle = 'yellow'
-    ctx.fillRect(x, y, 2 * unit, 2 * unit)
-}
-
-export const drawT: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'purple'
+const getOShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
-        case '1':
-            ctx.fillRect(x + unit, y, unit, 3 * unit)
-            ctx.fillRect(x, y + unit, unit, unit)
-            break
-
-        case '2':
-            ctx.fillRect(x + unit, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, unit)
-            break
-
-        case '3':
-            ctx.fillRect(x, y, unit, 3 * unit)
-            ctx.fillRect(x + unit, y + unit, unit, unit)
-            break
-
         default:
-            ctx.fillRect(x, y, 3 * unit, 1 * unit)
-            ctx.fillRect(x + unit, y + unit, unit, unit)
-            break
+            return [{ x, y, sx: 2 * unit, sy: 2 * unit }]
     }
 }
 
-export const drawL: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'orange'
+const getTShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
         case '1':
-            ctx.fillRect(x, y, 2 * unit, unit)
-            ctx.fillRect(x + unit, y, unit, 3 * unit)
-            break
-
+            return [
+                { x: x + unit, y, sx: unit, sy: 3 * unit },
+                { x, y: y + unit, sx: unit, sy: unit },
+            ]
         case '2':
-            ctx.fillRect(x + 2 * unit, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, unit)
-            break
-
+            return [
+                { x: x + unit, y, sx: unit, sy: unit },
+                { x, y: y + unit, sx: 3 * unit, sy: unit },
+            ]
         case '3':
-            ctx.fillRect(x, y, unit, 3 * unit)
-            ctx.fillRect(x + unit, y + 2 * unit, unit, unit)
-            break
-
+            return [
+                { x, y, sx: unit, sy: 3 * unit },
+                { x: x + unit, y: y + unit, sx: unit, sy: unit },
+            ]
         default:
-            ctx.fillRect(x, y, 3 * unit, 1 * unit)
-            ctx.fillRect(x, y + unit, unit, unit)
-            break
+            return [
+                { x, y, sx: 3 * unit, sy: unit },
+                { x: x + unit, y: y + unit, sx: unit, sy: unit },
+            ]
     }
 }
 
-export const drawJ: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'blue'
+const getLShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
         case '1':
-            ctx.fillRect(x, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, 1 * unit)
-            break
-
+            return [
+                { x, y, sx: 2 * unit, sy: unit },
+                { x: x + unit, y: y + unit, sx: unit, sy: 2 * unit },
+            ]
         case '2':
-            ctx.fillRect(x, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, 1 * unit)
-            break
-
+            return [
+                { x, y, sx: unit, sy: 2 * unit },
+                { x, y: y + unit, sx: 3 * unit, sy: unit },
+            ]
         case '3':
-            ctx.fillRect(x, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, 1 * unit)
-            break
-
+            return [
+                { x, y, sx: unit, sy: 3 * unit },
+                { x: x + unit, y: y + 2 * unit, sx: unit, sy: unit },
+            ]
         default:
-            ctx.fillRect(x, y, unit, unit)
-            ctx.fillRect(x, y + unit, 3 * unit, 1 * unit)
-            break
+            return [
+                { x, y, sx: 3 * unit, sy: unit },
+                { x, y: y + unit, sx: unit, sy: unit },
+            ]
     }
 }
 
-export const drawZ: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'red'
+const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
         case '1':
-            ctx.fillRect(x, y, 2 * unit, unit)
-            ctx.fillRect(x + unit, y + unit, 2 * unit, unit)
-            break
-
+            return [
+                { x, y, sx: unit, sy: 3 * unit },
+                { x: x + unit, y, sx: unit, sy: unit },
+            ]
         case '2':
-            ctx.fillRect(x, y, 2 * unit, unit)
-            ctx.fillRect(x + unit, y + unit, 2 * unit, unit)
-            break
-
+            return [
+                { x, y, sx: unit * 3, sy: unit },
+                { x: x + 2 * unit, y: y + unit, sx: unit, sy: unit },
+            ]
         case '3':
-            ctx.fillRect(x, y, 2 * unit, unit)
-            ctx.fillRect(x + unit, y + unit, 2 * unit, unit)
-            break
-
+            return [
+                { x, y: y + 2 * unit, sx: unit, sy: unit },
+                { x: x + unit, y, sx: unit, sy: 3 * unit },
+            ]
         default:
-            ctx.fillRect(x, y, 2 * unit, unit)
-            ctx.fillRect(x + unit, y + unit, 2 * unit, unit)
-            break
+            return [
+                { x, y, sx: unit, sy: unit },
+                { x, y: y + unit, sx: 3 * unit, sy: 1 * unit },
+            ]
     }
 }
 
-export const drawS: DrawShape = (ctx, { x, y }, quarter = '0') => {
-    ctx.fillStyle = 'green'
+const getZShape: GetShapeRect = ({ x, y }, quarter = '0') => {
     switch (quarter) {
         case '1':
-            ctx.fillRect(x + unit, y, 2 * unit, unit)
-            ctx.fillRect(x, y + unit, 2 * unit, unit)
-            break
-
-        case '2':
-            ctx.fillRect(x + unit, y, 2 * unit, unit)
-            ctx.fillRect(x, y + unit, 2 * unit, unit)
-            break
-
         case '3':
-            ctx.fillRect(x + unit, y, 2 * unit, unit)
-            ctx.fillRect(x, y + unit, 2 * unit, unit)
-            break
+            return [
+                { x: x + unit, y, sx: unit, sy: 2 * unit },
+                { x, y: y + unit, sx: unit, sy: 2 * unit },
+            ]
+        default:
+            return [
+                { x, y, sx: 2 * unit, sy: unit },
+                { x: x + unit, y: y + unit, sx: 2 * unit, sy: unit },
+            ]
+    }
+}
+
+const getSShape: GetShapeRect = ({ x, y }, quarter = '0') => {
+    switch (quarter) {
+        case '1':
+        case '3':
+            return [
+                { x, y, sx: unit, sy: 2 * unit },
+                { x: x + unit, y: y + unit, sx: unit, sy: 2 * unit },
+            ]
+        default:
+            return [
+                { x: x + unit, y, sx: 2 * unit, sy: unit },
+                { x, y: y + unit, sx: 2 * unit, sy: unit },
+            ]
+    }
+}
+
+export const getShape = ({ location, type, quarter }: ShapeProps): Shape => {
+    switch (type) {
+        case 'O':
+            return {
+                color: 'yellow',
+                quarter,
+                type,
+                rects: getOShape(location, quarter),
+            }
+        case 'T':
+            return {
+                color: 'purple',
+                quarter,
+                type,
+                rects: getTShape(location, quarter),
+            }
+        case 'L':
+            return {
+                color: 'orange',
+                quarter,
+                type,
+                rects: getLShape(location, quarter),
+            }
+        case 'J':
+            return {
+                color: 'blue',
+                quarter,
+                type,
+                rects: getJShape(location, quarter),
+            }
+        case 'Z':
+            return {
+                color: 'red',
+                quarter,
+                type,
+                rects: getZShape(location, quarter),
+            }
+        case 'S':
+            return {
+                color: 'green',
+                quarter,
+                type,
+                rects: getSShape(location, quarter),
+            }
 
         default:
-            ctx.fillRect(x + unit, y, 2 * unit, unit)
-            ctx.fillRect(x, y + unit, 2 * unit, unit)
-            break
+            // Case 'I' as default
+            return {
+                color: 'cyan',
+                quarter,
+                type,
+                rects: getIShape(location, quarter),
+            }
     }
 }

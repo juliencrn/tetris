@@ -2,9 +2,9 @@
 import { jsx, SxStyleProp } from 'theme-ui'
 import { FC, useEffect, useRef } from 'react'
 
-import { canvasSize } from '../config'
-import { drawGrid } from '../utils/grid'
-import { drawDemo } from '../utils/demo'
+import { canvasSize } from '../utils/config'
+import { drawGrid, drawShapes } from '../utils/drawer'
+import { getDemoData } from '../utils/demo'
 
 const style: SxStyleProp = {
     backgroundColor: 'purple',
@@ -19,11 +19,13 @@ const Canvas: FC<{ demo?: boolean }> = ({ demo }) => {
     useEffect(() => {
         const ctx = ref?.current?.getContext('2d')
         if (ctx) {
-            console.log({ ctx })
-            if (demo) {
-                drawDemo(ctx)
-            }
             drawGrid(ctx)
+
+            if (demo) {
+                drawShapes(ctx, getDemoData())
+            } else {
+                // Do stuff
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

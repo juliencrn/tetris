@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { Container, Heading, Grid, jsx } from 'theme-ui'
 
-import image from './assets/background.jpg'
-import Canvas from './components/Canvas'
-import { ObjectOfStyles } from './types'
-import MenuBar from './components/MenuBar'
+import image from '../assets/background.jpg'
+import Canvas from './Canvas'
+import { ObjectOfStyles } from '../types'
+import MenuBar from './MenuBar'
 
 const styles: ObjectOfStyles = {
     root: {

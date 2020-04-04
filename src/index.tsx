@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from 'theme-ui'
 
-import App from './App'
-import store from './store'
-import theme from './theme'
+import App from './components/App'
+import store from './utils/store'
+import theme from './utils/theme'
 import * as serviceWorker from './serviceWorker'
 
 ReactDOM.render(
