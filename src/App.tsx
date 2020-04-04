@@ -1,26 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/** @jsx jsx */
+import { Container, Heading, Grid, jsx } from 'theme-ui'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import image from './assets/background.jpg'
+import Canvas from './components/Canvas'
+import { ObjectOfStyles } from './types'
+import MenuBar from './components/MenuBar'
+
+const styles: ObjectOfStyles = {
+    root: {
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        backgroundImage: `url(${image})`,
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+    },
+    paper: {
+        py: 5,
+        px: 4,
+        backgroundColor: 'background',
+    },
+    title: {
+        fontSize: 6,
+        textAlign: 'center',
+        textTransform: 'uppercase',
+        mb: 4,
+    },
 }
 
-export default App;
+function App() {
+    return (
+        <div sx={styles.root}>
+            <Container>
+                <div sx={styles.paper}>
+                    <Heading sx={styles.title} color="primary">
+                        Tetris game
+                    </Heading>
+
+                    <MenuBar />
+
+                    <Grid columns={[1, 1, 2, 2]}>
+                        <Canvas />
+                        <Canvas demo />
+                    </Grid>
+                </div>
+            </Container>
+        </div>
+    )
+}
+
+export default App
