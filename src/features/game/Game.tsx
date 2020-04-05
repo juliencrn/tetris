@@ -9,16 +9,19 @@ import { getDemoData } from './demo'
 import Canvas from './Canvas'
 
 const Game: FC<{}> = () => {
-    const { shapes, currentShape } = useSelector(
-        (state: RootState) => state.game,
-    )
+    const game = useSelector((state: RootState) => state.game)
+
+    // Add the current Shape at the first place if exists
+    const shapes = game?.currentShape
+        ? [game?.currentShape, ...game.shapes]
+        : game.shapes
 
     return (
         <Fragment>
             <MenuBar />
 
             <Grid columns={[1, 1, 2, 2]}>
-                <Canvas shapes={[currentShape, ...shapes]} />
+                <Canvas shapes={shapes} />
                 <Canvas shapes={getDemoData()} />
             </Grid>
         </Fragment>

@@ -6,7 +6,7 @@ import {
     Rect,
     ShapeOptions,
 } from '../../common/types'
-import { unit } from '../../common/config'
+import { unit, cols } from '../../common/config'
 
 type GetShapeRect = (location: Location, quarter?: Quarter) => Rect[]
 interface ShapeProps {
@@ -196,11 +196,17 @@ export const getShape = ({ location, type, quarter }: ShapeProps): Shape => {
 }
 
 export const getRandomShape = (): ShapeOptions => {
+    // 1. Get random shape key
     const shapesKeys: ShapeType[] = ['I', 'O', 'T', 'J', 'L', 'Z', 'S']
     const type = shapesKeys[Math.floor(Math.random() * shapesKeys.length)]
-    return {
-        type,
-        quarter: '0',
-        location: { x: 0, y: 0 },
-    }
+
+    // 2. Get the started location from Canvas width
+    const isPair = cols % 2 === 0
+    const x = (isPair ? (cols - 2) / 2 : (cols - 3) / 2) * unit
+    const location = { x, y: 0 }
+
+    // 3. default orientation
+    const quarter = '0'
+
+    return { type, quarter, location }
 }
