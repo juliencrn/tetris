@@ -5,6 +5,9 @@ import image from '../assets/background.jpg'
 import Canvas from './Canvas'
 import { ObjectOfStyles } from '../types'
 import MenuBar from './MenuBar'
+import { useSelector } from 'react-redux'
+import { RootState } from '../utils/store'
+import { getDemoData } from '../utils/demo'
 
 const styles: ObjectOfStyles = {
     root: {
@@ -30,6 +33,9 @@ const styles: ObjectOfStyles = {
 }
 
 function App() {
+    const { shapes } = useSelector((state: RootState) => state.game)
+
+    console.log({ shapes, demo: getDemoData() })
     return (
         <div sx={styles.root}>
             <Container>
@@ -41,8 +47,8 @@ function App() {
                     <MenuBar />
 
                     <Grid columns={[1, 1, 2, 2]}>
-                        <Canvas />
-                        <Canvas demo />
+                        <Canvas shapes={shapes} />
+                        <Canvas shapes={getDemoData()} />
                     </Grid>
                 </div>
             </Container>
