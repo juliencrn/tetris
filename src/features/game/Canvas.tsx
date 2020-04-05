@@ -2,9 +2,9 @@
 import { jsx, SxStyleProp } from 'theme-ui'
 import { FC, useEffect, useRef } from 'react'
 
-import { canvasSize } from '../utils/config'
-import { drawGrid, drawShapes } from '../utils/drawer'
-import { ShapeOptions } from '../types'
+import { canvasSize } from '../../common/config'
+import { drawGrid, drawShapes } from './drawer'
+import { ShapeOptions } from '../../common/types'
 
 const style: SxStyleProp = {
     backgroundColor: 'purple',
@@ -23,9 +23,13 @@ const Canvas: FC<CanvasProps> = ({ shapes }) => {
     useEffect(() => {
         const ctx = ref?.current?.getContext('2d')
         if (ctx) {
-            // clear old shapes then redraw all
+            // 1. Clear the canvas
             ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
+
+            // 2. Draw the grid
             drawGrid(ctx)
+
+            // 3. Draw the Shapes
             drawShapes(ctx, shapes)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

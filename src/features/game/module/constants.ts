@@ -1,4 +1,4 @@
-import { ShapeOptions, Quarter, Location } from '../types'
+import { ShapeOptions } from '../../../common/types'
 
 // Game
 export const CREATE_SHAPE = 'CREATE_SHAPE'

@@ -9,7 +9,7 @@ import {
     moveLeft,
     moveRight,
     moveBottom,
-} from '../game/actions'
+} from './module/actions'
 
 const MenuBar: FC<{}> = () => {
     const dispatch = useDispatch()

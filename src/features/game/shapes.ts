@@ -1,5 +1,5 @@
-import { Location, Quarter, ShapeType, Shape, Rect } from '../types'
-import { unit } from './config'
+import { Location, Quarter, ShapeType, Shape, Rect } from '../../common/types'
+import { unit } from '../../common/config'
 
 type GetShapeRect = (location: Location, quarter?: Quarter) => Rect[]
 interface ShapeProps {

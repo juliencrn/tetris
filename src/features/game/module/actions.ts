@@ -6,9 +6,8 @@ import {
     MOVE_LEFT,
     MOVE_BOTTOM,
     MOVE_RIGHT,
-} from './types'
-import { unit } from '../utils/config'
-import { Quarter } from '../types'
+} from './constants'
+import { unit } from '../../../common/config'
 
 /*
  * Game control functions

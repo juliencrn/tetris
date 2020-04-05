@@ -1,6 +1,6 @@
-import { Quarter, ShapeOptions } from '../types'
-import * as types from './types'
-import { unit, canvasSize } from '../utils/config'
+import { Quarter, ShapeOptions } from '../../../common/types'
+import * as types from './constants'
+import { unit, canvasSize } from '../../../common/config'
 
 export interface UserState {
     shapes: ShapeOptions[]
@@ -9,15 +9,6 @@ export interface UserState {
 const initialState: UserState = {
     shapes: [],
 }
-
-// tmp utils
-function incrementQuarter(prev: Quarter) {
-    const quarterToNum = Number(prev)
-    const newQuarter: number = quarterToNum < 3 ? quarterToNum + 1 : 0
-    return newQuarter.toString() as Quarter
-}
-
-// TODO : Ne pas laisser "any" pour les actions
 
 export default function userReducer(
     state = initialState,
@@ -44,9 +35,12 @@ export default function userReducer(
                 ...state,
                 shapes: state.shapes.map((shape, i: number) => {
                     if (i === 0) {
+                        const quarterToNum = Number(shape.quarter)
+                        const newQuarter: number =
+                            quarterToNum < 3 ? quarterToNum + 1 : 0
                         return {
                             ...shape,
-                            quarter: incrementQuarter(shape.quarter),
+                            quarter: newQuarter.toString() as Quarter,
                         }
                     }
                     return shape

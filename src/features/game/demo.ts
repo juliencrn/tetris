@@ -1,5 +1,5 @@
-import { unit } from './config'
-import { ShapeOptions } from '../types'
+import { unit } from '../../common/config'
+import { ShapeOptions } from '../../common/types'
 
 export const getDemoData = (): Partial<ShapeOptions>[] => {
     return [

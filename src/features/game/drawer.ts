@@ -1,9 +1,9 @@
 import { rgba } from 'polished'
 
-import { ShapeOptions, Shape } from '../types'
+import { ShapeOptions, Shape } from '../../common/types'
 import { getShape } from './shapes'
-import { unit, canvasSize, cols, rows } from './config'
-import theme from './theme'
+import { unit, canvasSize, cols, rows } from '../../common/config'
+import theme from '../../app/theme'
 
 const { width, height } = canvasSize
 

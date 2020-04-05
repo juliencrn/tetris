@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import { Container, Heading, Grid, jsx } from 'theme-ui'
 
-import image from '../assets/background.jpg'
-import Canvas from './Canvas'
-import { ObjectOfStyles } from '../types'
-import MenuBar from './MenuBar'
+import image from './background.jpg'
+import Canvas from '../features/game/Canvas'
+import { ObjectOfStyles } from '../common/types'
+import MenuBar from '../features/game/MenuBar'
 import { useSelector } from 'react-redux'
-import { RootState } from '../utils/store'
-import { getDemoData } from '../utils/demo'
+import { RootState } from './store'
+import { getDemoData } from '../features/game/demo'
 
 const styles: ObjectOfStyles = {
     root: {
