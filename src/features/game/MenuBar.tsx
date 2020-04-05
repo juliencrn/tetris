@@ -9,7 +9,8 @@ import {
     moveLeft,
     moveRight,
     moveBottom,
-} from './module/actions'
+} from './module'
+import { getRandomShape } from './shapes'
 
 const MenuBar: FC<{}> = () => {
     const dispatch = useDispatch()
@@ -19,7 +20,7 @@ const MenuBar: FC<{}> = () => {
      */
 
     const handleNewShape = () => {
-        dispatch(createShape())
+        dispatch(createShape(getRandomShape()))
     }
 
     const handleReset = () => {

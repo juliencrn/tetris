@@ -1,13 +1,9 @@
 /** @jsx jsx */
-import { Container, Heading, Grid, jsx } from 'theme-ui'
+import { Container, Heading, jsx } from 'theme-ui'
 
 import image from './background.jpg'
-import Canvas from '../features/game/Canvas'
 import { ObjectOfStyles } from '../common/types'
-import MenuBar from '../features/game/MenuBar'
-import { useSelector } from 'react-redux'
-import { RootState } from './store'
-import { getDemoData } from '../features/game/demo'
+import Game from '../features/game/Game'
 
 const styles: ObjectOfStyles = {
     root: {
@@ -33,9 +29,6 @@ const styles: ObjectOfStyles = {
 }
 
 function App() {
-    const { shapes } = useSelector((state: RootState) => state.game)
-
-    console.log({ shapes, demo: getDemoData() })
     return (
         <div sx={styles.root}>
             <Container>
@@ -44,12 +37,7 @@ function App() {
                         Tetris game
                     </Heading>
 
-                    <MenuBar />
-
-                    <Grid columns={[1, 1, 2, 2]}>
-                        <Canvas shapes={shapes} />
-                        <Canvas shapes={getDemoData()} />
-                    </Grid>
+                    <Game />
                 </div>
             </Container>
         </div>

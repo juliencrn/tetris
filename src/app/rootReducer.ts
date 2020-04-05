@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux'
 
-import game from '../features/game'
+import game from '../features/game/module'
 
 const rootReducer = combineReducers({
     game,
 })
-
-export type RootState = ReturnType<typeof rootReducer>
 
 export default rootReducer

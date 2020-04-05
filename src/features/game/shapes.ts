@@ -1,4 +1,11 @@
-import { Location, Quarter, ShapeType, Shape, Rect } from '../../common/types'
+import {
+    Location,
+    Quarter,
+    ShapeType,
+    Shape,
+    Rect,
+    ShapeOptions,
+} from '../../common/types'
 import { unit } from '../../common/config'
 
 type GetShapeRect = (location: Location, quarter?: Quarter) => Rect[]
@@ -185,5 +192,15 @@ export const getShape = ({ location, type, quarter }: ShapeProps): Shape => {
                 type,
                 rects: getIShape(location, quarter),
             }
+    }
+}
+
+export const getRandomShape = (): ShapeOptions => {
+    const shapesKeys: ShapeType[] = ['I', 'O', 'T', 'J', 'L', 'Z', 'S']
+    const type = shapesKeys[Math.floor(Math.random() * shapesKeys.length)]
+    return {
+        type,
+        quarter: '0',
+        location: { x: 0, y: 0 },
     }
 }
