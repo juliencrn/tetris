@@ -13,7 +13,7 @@ const theme = {
     },
     fonts: {
         body: "'Fira Code', monospace",
-        heading: "'Fira Code', monospace",
+        heading: "'Super Mario Bros', cursive",
         monospace: "'Fira Code', monospace",
     },
     fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 72],

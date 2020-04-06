@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Super Mario Bros';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Super Mario Bros'),
+        url('../assets/fonts/Super-Mario-Bros.ttf') format('truetype');
+  }
