@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ShapeOptions, Quarter } from '../../common/types'
+import { Quarter, Shape } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
+import { getShape } from './shapes'
 
 interface UserState {
-    currentShape?: ShapeOptions
+    currentShape?: Shape
     isPlaying: boolean
-    shapes: ShapeOptions[]
+    shapes: Shape[]
 }
 
 const initialState: UserState = {
@@ -18,7 +19,7 @@ const game = createSlice({
     name: 'game',
     initialState,
     reducers: {
-        createShape(state, action: PayloadAction<ShapeOptions>) {
+        createShape(state, action: PayloadAction<Shape>) {
             if (!state.isPlaying) {
                 state.isPlaying = true
             }
@@ -39,16 +40,36 @@ const game = createSlice({
                 return state
             }
 
+            const { location, type } = state.currentShape
+
             const quarterToNum = Number(state.currentShape.quarter)
-            const newQuarter: number = quarterToNum < 3 ? quarterToNum + 1 : 0
-            state.currentShape.quarter = newQuarter.toString() as Quarter
+            const quarter = `${
+                quarterToNum < 3 ? quarterToNum + 1 : 0
+            }` as Quarter
+
+            // It can be without the canvas area
+            const shape = getShape({ location, type, quarter })
+
+            // Right wall touched
+            if (location.x >= canvasSize.width - shape.width) {
+                shape.location.x = canvasSize.width - shape.width
+            }
+
+            state.currentShape = shape
         },
         moveLeft(state) {
             if (!state?.currentShape) {
                 return state
             }
 
-            const { x } = state.currentShape.location
+            const shape = state.currentShape
+            const { x } = shape.location
+
+            // Left wall touched
+            if (x <= 0) {
+                return state
+            }
+
             state.currentShape.location.x = x - unit
         },
         moveRight(state) {
@@ -56,7 +77,14 @@ const game = createSlice({
                 return state
             }
 
-            const { x } = state.currentShape.location
+            const shape = state.currentShape
+            const { x } = shape.location
+
+            // Right wall touched
+            if (x >= canvasSize.width - shape.width) {
+                return state
+            }
+
             state.currentShape.location.x = x + unit
         },
         moveBottom(state) {
@@ -64,7 +92,15 @@ const game = createSlice({
                 return state
             }
 
-            state.currentShape.location.y = canvasSize.width - 2 * unit
+            const shape = state.currentShape
+            const { y } = shape.location
+
+            // Bottom touched
+            if (y >= canvasSize.height - shape.height) {
+                return state
+            }
+
+            state.currentShape.location.y = y + unit
         },
     },
 })

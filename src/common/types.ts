@@ -23,9 +23,9 @@ export interface ShapeOptions {
     location: Location
 }
 
-export interface Shape {
-    type: ShapeType
-    quarter: Quarter
+export interface Shape extends ShapeOptions {
     color: string
+    width: number
+    height: number
     rects: Rect[]
 }
