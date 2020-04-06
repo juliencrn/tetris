@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 import { RootState } from '../../app/store'
 import MenuBar from './MenuBar'
-import { getDemoData } from './demo'
+// import { getDemoData } from './demo'
 import Canvas from './Canvas'
 
 const Game: FC<{}> = () => {
@@ -20,9 +20,9 @@ const Game: FC<{}> = () => {
         <Fragment>
             <MenuBar />
 
-            <Grid columns={[1, 1, 2, 2]}>
+            <Grid columns={[1]}>
                 <Canvas shapes={shapes} />
-                <Canvas shapes={getDemoData()} />
+                {/* <Canvas shapes={getDemoData()} /> */}
             </Grid>
         </Fragment>
     )

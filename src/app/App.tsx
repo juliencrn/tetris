@@ -2,10 +2,10 @@
 import { Container, Heading, jsx } from 'theme-ui'
 
 import image from './background.jpg'
-import { ObjectOfStyles } from '../common/types'
+import { Styles } from '../common/types'
 import Game from '../features/game/Game'
 
-const styles: ObjectOfStyles = {
+const styles: Styles = {
     root: {
         height: '100vh',
         display: 'flex',

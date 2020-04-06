@@ -3,7 +3,7 @@ import { SxStyleProp } from 'theme-ui'
 export type Quarter = '0' | '1' | '2' | '3'
 export type ShapeType = 'I' | 'O' | 'T' | 'L' | 'J' | 'Z' | 'S'
 
-export interface ObjectOfStyles {
+export interface Styles {
     [key: string]: SxStyleProp
 }
 
@@ -28,4 +28,9 @@ export interface Shape extends ShapeOptions {
     width: number
     height: number
     rects: Rect[]
+}
+
+export interface Drawn {
+    location: Location
+    key: string // x-y => 5-1
 }

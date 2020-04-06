@@ -1,6 +1,6 @@
-export const unit = 20
-export const cols = 20
-export const rows = 30
+export const unit = 25
+export const cols = 10
+export const rows = 10
 
 // Size of Canvas HTML Element
 export const canvasSize = {

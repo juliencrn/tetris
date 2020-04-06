@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Quarter, Shape } from '../../common/types'
+import { Quarter, Shape, Location, Drawn } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
 import { getShape } from './shapes'
 
@@ -7,12 +7,14 @@ interface UserState {
     currentShape?: Shape
     isPlaying: boolean
     shapes: Shape[]
+    drawn: Drawn[]
 }
 
 const initialState: UserState = {
     currentShape: undefined,
     shapes: [],
     isPlaying: false,
+    drawn: [],
 }
 
 const game = createSlice({
@@ -29,8 +31,55 @@ const game = createSlice({
                 state.shapes = [state.currentShape, ...state.shapes]
             }
 
+            // Get all drawn cases (for x & y axis)
+            let allDrawn: Location[] = []
+            action.payload.rects.forEach(({ x, y, sx, sy }) => {
+                // Drawn in x axis
+                const xCount = sx / unit
+                for (let i = 0; i < xCount; i++) {
+                    allDrawn = [...allDrawn, { x: i * unit + x, y }]
+                }
+
+                // Drawn in y axis
+                const yCount = sy / unit
+                for (let i = 0; i < yCount; i++) {
+                    allDrawn = [...allDrawn, { x, y: i * unit + y }]
+                }
+            })
+
+            // Remove doubles and add location key (ex: x-y => 5-1)
+            const filteredDrawn = allDrawn.reduce(
+                (prev: Drawn[], curr: Location) => {
+                    const key = `${curr.x / unit}-${curr.y / unit}`
+                    if (!prev) {
+                        return [
+                            {
+                                location: curr,
+                                key,
+                            },
+                        ]
+                    }
+
+                    if (prev.filter((item) => item.key === key).length === 0) {
+                        return [
+                            ...prev,
+                            {
+                                location: curr,
+                                key,
+                            },
+                        ]
+                    }
+
+                    return prev
+                },
+                [] as Drawn[],
+            )
+
+            console.log({ allDrawn, filteredDrawn })
+
             // Set the new shape from payload
             state.currentShape = action.payload
+            state.drawn = filteredDrawn
         },
         resetGame() {
             return initialState
