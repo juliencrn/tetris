@@ -6,10 +6,11 @@ import { unit, canvasSize, cols, rows } from '../../common/config'
 
 const { width, height } = canvasSize
 
-/**
- * Draw the Grid
- * @param ctx
- */
+// Clean the canvas
+const clear = (ctx: any) => () =>
+    ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
+
+// Draw the Grid
 const drawGrid = (ctx: any) => () => {
     const lineSize = 0.5
     ctx.fillStyle = rgba(theme.colors.red, 0.67)
@@ -25,11 +26,7 @@ const drawGrid = (ctx: any) => () => {
     }
 }
 
-/**
- * Draw one shape
- * @param ctx
- * @param shape
- */
+// Draw one shape
 const drawShape = (ctx: any) => (shape: Shape): void => {
     const { color, rects } = shape
     if (color) {
@@ -42,11 +39,7 @@ const drawShape = (ctx: any) => (shape: Shape): void => {
     }
 }
 
-/**
- * Draw All shapes
- * @param ctx
- * @param shapesToDraw Partial<ShapeOptions>[]
- */
+// Draw All shapes
 const drawShapes = (ctx: any) => (shapes: Shape[]): void => {
     if (ctx && shapes) {
         shapes.forEach((shape) => {
@@ -56,7 +49,7 @@ const drawShapes = (ctx: any) => (shapes: Shape[]): void => {
 }
 
 const drawer = (ctx: any) => ({
-    clear: () => ctx.clearRect(0, 0, canvasSize.width, canvasSize.height),
+    clear: clear(ctx),
     grid: drawGrid(ctx),
     shapes: drawShapes(ctx),
 })
