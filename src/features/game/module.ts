@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Quarter, Shape, Location, Drawn } from '../../common/types'
+
+import { Shape, Drawn, ShapeOptions } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
+
 import { getShape } from './shapes'
+import { incrementQuarter, makeShapeDrawn, filterDrawn } from './utils'
 
 interface UserState {
     currentShape?: Shape
@@ -21,7 +24,7 @@ const game = createSlice({
     name: 'game',
     initialState,
     reducers: {
-        createShape(state, action: PayloadAction<Shape>) {
+        createShape(state, { payload }: PayloadAction<ShapeOptions>) {
             if (!state.isPlaying) {
                 state.isPlaying = true
             }
@@ -31,55 +34,16 @@ const game = createSlice({
                 state.shapes = [state.currentShape, ...state.shapes]
             }
 
-            // Get all drawn cases (for x & y axis)
-            let allDrawn: Location[] = []
-            action.payload.rects.forEach(({ x, y, sx, sy }) => {
-                // Drawn in x axis
-                const xCount = sx / unit
-                for (let i = 0; i < xCount; i++) {
-                    allDrawn = [...allDrawn, { x: i * unit + x, y }]
-                }
-
-                // Drawn in y axis
-                const yCount = sy / unit
-                for (let i = 0; i < yCount; i++) {
-                    allDrawn = [...allDrawn, { x, y: i * unit + y }]
-                }
-            })
-
-            // Remove doubles and add location key (ex: x-y => 5-1)
-            const filteredDrawn = allDrawn.reduce(
-                (prev: Drawn[], curr: Location) => {
-                    const key = `${curr.x / unit}-${curr.y / unit}`
-                    if (!prev) {
-                        return [
-                            {
-                                location: curr,
-                                key,
-                            },
-                        ]
-                    }
-
-                    if (prev.filter((item) => item.key === key).length === 0) {
-                        return [
-                            ...prev,
-                            {
-                                location: curr,
-                                key,
-                            },
-                        ]
-                    }
-
-                    return prev
-                },
-                [] as Drawn[],
-            )
-
-            console.log({ allDrawn, filteredDrawn })
+            const shape = {
+                ...getShape(payload),
+                uid: state.shapes.length.toString(),
+            }
 
             // Set the new shape from payload
-            state.currentShape = action.payload
-            state.drawn = filteredDrawn
+            state.currentShape = shape
+
+            // Add drawn cases
+            state.drawn.push(...makeShapeDrawn(shape))
         },
         resetGame() {
             return initialState
@@ -89,21 +53,29 @@ const game = createSlice({
                 return state
             }
 
-            const { location, type } = state.currentShape
+            const { location, width } = state.currentShape
 
-            const quarterToNum = Number(state.currentShape.quarter)
-            const quarter = `${
-                quarterToNum < 3 ? quarterToNum + 1 : 0
-            }` as Quarter
-
-            // It can be without the canvas area
-            const shape = getShape({ location, type, quarter })
-
-            // Right wall touched
-            if (location.x >= canvasSize.width - shape.width) {
-                shape.location.x = canvasSize.width - shape.width
+            const shape: Shape = {
+                uid: state.currentShape.uid,
+                ...getShape({
+                    ...state.currentShape,
+                    quarter: incrementQuarter(state.currentShape.quarter),
+                    // Update location if the shape exceeds the canvas
+                    location:
+                        location.x >= canvasSize.width - width
+                            ? {
+                                  ...location,
+                                  x: canvasSize.width - width - unit,
+                              }
+                            : location,
+                }),
             }
 
+            // Update drawn (remove current then push new location)
+            const filteredDrawn = filterDrawn(shape.uid, state.drawn)
+            const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
+
+            state.drawn = drawn
             state.currentShape = shape
         },
         moveLeft(state) {
@@ -111,45 +83,93 @@ const game = createSlice({
                 return state
             }
 
-            const shape = state.currentShape
-            const { x } = shape.location
+            const { location } = state.currentShape
 
             // Left wall touched
-            if (x <= 0) {
+            if (location.x <= 0) {
                 return state
             }
 
-            state.currentShape.location.x = x - unit
+            // Update location
+            const shape: Shape = {
+                uid: state.currentShape.uid,
+                ...getShape({
+                    ...state.currentShape,
+                    location: {
+                        ...location,
+                        x: location.x - unit,
+                    },
+                }),
+            }
+
+            // Update drawn (remove current then push new location)
+            const filteredDrawn = filterDrawn(shape.uid, state.drawn)
+            const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
+
+            state.drawn = drawn
+            state.currentShape = shape
         },
         moveRight(state) {
             if (!state?.currentShape) {
                 return state
             }
 
-            const shape = state.currentShape
-            const { x } = shape.location
+            const { location } = state.currentShape
 
             // Right wall touched
-            if (x >= canvasSize.width - shape.width) {
+            if (location.x >= canvasSize.width - state.currentShape.width) {
                 return state
             }
 
-            state.currentShape.location.x = x + unit
+            // Update location
+            const shape: Shape = {
+                uid: state.currentShape.uid,
+                ...getShape({
+                    ...state.currentShape,
+                    location: {
+                        ...location,
+                        x: location.x + unit,
+                    },
+                }),
+            }
+
+            // Update drawn (remove current then push new location)
+            const filteredDrawn = filterDrawn(shape.uid, state.drawn)
+            const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
+
+            state.drawn = drawn
+            state.currentShape = shape
         },
         moveBottom(state) {
             if (!state?.currentShape) {
                 return state
             }
 
-            const shape = state.currentShape
-            const { y } = shape.location
+            const { location } = state.currentShape
 
             // Bottom touched
-            if (y >= canvasSize.height - shape.height) {
+            if (location.y >= canvasSize.height - state.currentShape.height) {
                 return state
             }
 
-            state.currentShape.location.y = y + unit
+            // Update location
+            const shape: Shape = {
+                uid: state.currentShape.uid,
+                ...getShape({
+                    ...state.currentShape,
+                    location: {
+                        ...location,
+                        y: location.y + unit,
+                    },
+                }),
+            }
+
+            // Update drawn (remove current then push new location)
+            const filteredDrawn = filterDrawn(shape.uid, state.drawn)
+            const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
+
+            state.drawn = drawn
+            state.currentShape = shape
         },
     },
 })

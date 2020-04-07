@@ -1,10 +1,11 @@
-import { Location, Quarter, ShapeType, Shape, Rect } from '../../common/types'
-import { unit, cols } from '../../common/config'
+import { Location, Quarter, ShapeType, Shape } from '../../common/types'
+import { unit } from '../../common/config'
 
 type GetShapeRect = (
     location: Location,
     quarter?: Quarter,
-) => { rects: Rect[]; width: number; height: number }
+) => { rects: Location[]; width: number; height: number }
+
 interface ShapeProps {
     type: ShapeType
     quarter: Quarter
@@ -18,13 +19,23 @@ const getIShape: GetShapeRect = ({ x, y }, quarter = '0') => {
             return {
                 width: 4 * unit,
                 height: unit,
-                rects: [{ x, y, sx: 4 * unit, sy: unit }],
+                rects: [
+                    { x, y },
+                    { x: x + unit, y },
+                    { x: x + 2 * unit, y },
+                    { x: x + 3 * unit, y },
+                ],
             }
         default:
             return {
                 width: unit,
                 height: 4 * unit,
-                rects: [{ x, y, sx: unit, sy: 4 * unit }],
+                rects: [
+                    { x, y },
+                    { x, y: y + unit },
+                    { x, y: y + 2 * unit },
+                    { x, y: y + 3 * unit },
+                ],
             }
     }
 }
@@ -35,7 +46,12 @@ const getOShape: GetShapeRect = ({ x, y }, quarter = '0') => {
             return {
                 width: 2 * unit,
                 height: 2 * unit,
-                rects: [{ x, y, sx: 2 * unit, sy: 2 * unit }],
+                rects: [
+                    { x, y },
+                    { x: x + unit, y },
+                    { x, y: y + unit },
+                    { x: x + unit, y: y + unit },
+                ],
             }
     }
 }
@@ -47,8 +63,10 @@ const getTShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x: x + unit, y, sx: unit, sy: 3 * unit },
-                    { x, y: y + unit, sx: unit, sy: unit },
+                    { x: x + unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x: x + unit, y: y + 2 * unit },
+                    { x, y: y + unit },
                 ],
             }
         case '2':
@@ -56,8 +74,10 @@ const getTShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x: x + unit, y, sx: unit, sy: unit },
-                    { x, y: y + unit, sx: 3 * unit, sy: unit },
+                    { x: x + unit, y },
+                    { x, y: y + unit },
+                    { x: x + unit, y: y + unit },
+                    { x: x + 2 * unit, y: y + unit },
                 ],
             }
         case '3':
@@ -65,8 +85,10 @@ const getTShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: 3 * unit },
-                    { x: x + unit, y: y + unit, sx: unit, sy: unit },
+                    { x, y },
+                    { x, y: y + unit },
+                    { x, y: y + 2 * unit },
+                    { x: x + unit, y: y + unit },
                 ],
             }
         default:
@@ -74,8 +96,10 @@ const getTShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: 3 * unit, sy: unit },
-                    { x: x + unit, y: y + unit, sx: unit, sy: unit },
+                    { x, y },
+                    { x: x + unit, y },
+                    { x: x + 2 * unit, y },
+                    { x: x + unit, y: y + unit },
                 ],
             }
     }
@@ -88,8 +112,10 @@ const getLShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y, sx: 2 * unit, sy: unit },
-                    { x: x + unit, y: y + unit, sx: unit, sy: 2 * unit },
+                    { x: x + unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x: x + unit, y: y + 2 * unit },
+                    { x, y },
                 ],
             }
         case '2':
@@ -97,8 +123,10 @@ const getLShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: 2 * unit },
-                    { x, y: y + unit, sx: 3 * unit, sy: unit },
+                    { x, y: y + unit },
+                    { x: x + unit, y: y + unit },
+                    { x: x + 2 * unit, y: y + unit },
+                    { x: x + 2 * unit, y },
                 ],
             }
         case '3':
@@ -106,8 +134,10 @@ const getLShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: 3 * unit },
-                    { x: x + unit, y: y + 2 * unit, sx: unit, sy: unit },
+                    { x, y },
+                    { x, y: y + unit },
+                    { x, y: y + 2 * unit },
+                    { x: x + unit, y: y + 2 * unit },
                 ],
             }
         default:
@@ -115,8 +145,10 @@ const getLShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: 3 * unit, sy: unit },
-                    { x, y: y + unit, sx: unit, sy: unit },
+                    { x, y },
+                    { x: x + unit, y },
+                    { x: x + 2 * unit, y },
+                    { x, y: y + unit },
                 ],
             }
     }
@@ -129,8 +161,10 @@ const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: 3 * unit },
-                    { x: x + unit, y, sx: unit, sy: unit },
+                    { x: x + unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x: x + unit, y: y + 2 * unit },
+                    { x, y: y + 2 * unit },
                 ],
             }
         case '2':
@@ -138,8 +172,10 @@ const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: unit * 3, sy: unit },
-                    { x: x + 2 * unit, y: y + unit, sx: unit, sy: unit },
+                    { x, y },
+                    { x, y: y + unit },
+                    { x: x + unit, y: y + unit },
+                    { x: x + 2 * unit, y: y + unit },
                 ],
             }
         case '3':
@@ -147,8 +183,10 @@ const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y: y + 2 * unit, sx: unit, sy: unit },
-                    { x: x + unit, y, sx: unit, sy: 3 * unit },
+                    { x, y },
+                    { x, y: y + unit },
+                    { x, y: y + 2 * unit },
+                    { x: x + unit, y: y + 2 * unit },
                 ],
             }
         default:
@@ -156,8 +194,10 @@ const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: unit },
-                    { x, y: y + unit, sx: 3 * unit, sy: 1 * unit },
+                    { x, y },
+                    { x: x + unit, y },
+                    { x: x + 2 * unit, y },
+                    { x: x + 2 * unit, y: y + unit },
                 ],
             }
     }
@@ -171,8 +211,10 @@ const getZShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x: x + unit, y, sx: unit, sy: 2 * unit },
-                    { x, y: y + unit, sx: unit, sy: 2 * unit },
+                    { x: x + unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x, y: y + unit },
+                    { x, y: y + 2 * unit },
                 ],
             }
         default:
@@ -180,8 +222,10 @@ const getZShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x, y, sx: 2 * unit, sy: unit },
-                    { x: x + unit, y: y + unit, sx: 2 * unit, sy: unit },
+                    { x, y },
+                    { x: x + unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x: x + 2 * unit, y: y + unit },
                 ],
             }
     }
@@ -195,8 +239,10 @@ const getSShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 2 * unit,
                 height: 3 * unit,
                 rects: [
-                    { x, y, sx: unit, sy: 2 * unit },
-                    { x: x + unit, y: y + unit, sx: unit, sy: 2 * unit },
+                    { x, y },
+                    { x, y: y + unit },
+                    { x: x + unit, y: y + unit },
+                    { x: x + unit, y: y + 2 * unit },
                 ],
             }
         default:
@@ -204,14 +250,16 @@ const getSShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                 width: 3 * unit,
                 height: 2 * unit,
                 rects: [
-                    { x: x + unit, y, sx: 2 * unit, sy: unit },
-                    { x, y: y + unit, sx: 2 * unit, sy: unit },
+                    { x: x + unit, y },
+                    { x: x + 2 * unit, y },
+                    { x: x + unit, y: y + unit },
+                    { x, y: y + unit },
                 ],
             }
     }
 }
 
-export const getShape = (props: ShapeProps): Shape => {
+export const getShape = (props: ShapeProps): Omit<Shape, 'uid'> => {
     const { location, type, quarter } = props
     switch (type) {
         case 'O':
@@ -259,17 +307,4 @@ export const getShape = (props: ShapeProps): Shape => {
                 ...getIShape(location, quarter),
             }
     }
-}
-
-export const getRandomShape = (): Shape => {
-    // 1. Get random shape key
-    const shapesKeys: ShapeType[] = ['I', 'O', 'T', 'J', 'L', 'Z', 'S']
-    const type = shapesKeys[Math.floor(Math.random() * shapesKeys.length)]
-
-    // 2. Get the started location from Canvas width
-    const isPair = cols % 2 === 0
-    const x = (isPair ? (cols - 2) / 2 : (cols - 3) / 2) * unit
-    const location = { x, y: 0 }
-
-    return getShape({ location, type, quarter: '0' })
 }

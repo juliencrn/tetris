@@ -1,7 +1,12 @@
 /** @jsx jsx */
 import { jsx, Flex, Button } from 'theme-ui'
 import { FC, Fragment } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { RootState } from '../../app/store'
+import { Styles } from '../../common/types'
+
+import { getRandomShapeOptions } from './utils'
 import {
     createShape,
     resetGame,
@@ -10,9 +15,6 @@ import {
     moveRight,
     moveBottom,
 } from './module'
-import { getRandomShape, getShape } from './shapes'
-import { ShapeType, Styles, ShapeOptions } from '../../common/types'
-import { unit } from '../../common/config'
 
 const style: Styles = {
     flex: {
@@ -23,13 +25,16 @@ const style: Styles = {
 
 const MenuBar: FC<{}> = () => {
     const dispatch = useDispatch()
+    const game = useSelector((state: RootState) => state.game)
+
+    const canMove = !!game?.currentShape
 
     /*
      * Game control functions
      */
 
     const handleNewShape = () => {
-        dispatch(createShape(getRandomShape()))
+        dispatch(createShape(getRandomShapeOptions()))
     }
 
     const handleReset = () => {
@@ -56,22 +61,21 @@ const MenuBar: FC<{}> = () => {
         dispatch(moveBottom())
     }
 
-    const handleDraw = (type: ShapeType) => {
-        const options: ShapeOptions = {
-            type,
-            quarter: '0',
-            location: { x: 4 * unit, y: 0 },
-        }
-        dispatch(createShape(getShape(options)))
-    }
-
     return (
         <Fragment>
             <Flex sx={style.flex}>
-                <Button onClick={handleRotate}>Rotate</Button>
-                <Button onClick={handleMoveLeft}>Left</Button>
-                <Button onClick={handleMoveRight}>Right</Button>
-                <Button onClick={handleMoveBottom}>Go Bottom</Button>
+                <Button disabled={!canMove} onClick={handleRotate}>
+                    Rotate
+                </Button>
+                <Button disabled={!canMove} onClick={handleMoveLeft}>
+                    Left
+                </Button>
+                <Button disabled={!canMove} onClick={handleMoveRight}>
+                    Right
+                </Button>
+                <Button disabled={!canMove} onClick={handleMoveBottom}>
+                    Go Bottom
+                </Button>
             </Flex>
 
             <Flex sx={style.flex}>
@@ -79,16 +83,6 @@ const MenuBar: FC<{}> = () => {
                 <Button>Pause</Button>
                 <Button onClick={handleReset}>Reset</Button>
                 <Button onClick={handleNewShape}>New Shape</Button>
-            </Flex>
-
-            <Flex sx={style.flex}>
-                <Button onClick={() => handleDraw('I')}>I</Button>
-                <Button onClick={() => handleDraw('T')}>T</Button>
-                <Button onClick={() => handleDraw('L')}>L</Button>
-                <Button onClick={() => handleDraw('Z')}>Z</Button>
-                <Button onClick={() => handleDraw('S')}>S</Button>
-                <Button onClick={() => handleDraw('O')}>O</Button>
-                <Button onClick={() => handleDraw('J')}>J</Button>
             </Flex>
         </Fragment>
     )

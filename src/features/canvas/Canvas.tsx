@@ -3,8 +3,9 @@ import { jsx, SxStyleProp } from 'theme-ui'
 import { FC, useEffect, useRef } from 'react'
 
 import { canvasSize } from '../../common/config'
-import { drawGrid, drawShapes } from './drawer'
-import { ShapeOptions } from '../../common/types'
+import { Shape } from '../../common/types'
+
+import drawer from './drawer'
 
 const style: SxStyleProp = {
     backgroundColor: 'purple',
@@ -14,7 +15,7 @@ const style: SxStyleProp = {
 }
 
 export interface CanvasProps {
-    shapes: Partial<ShapeOptions>[]
+    shapes: Shape[]
 }
 
 const Canvas: FC<CanvasProps> = ({ shapes }) => {
@@ -23,14 +24,16 @@ const Canvas: FC<CanvasProps> = ({ shapes }) => {
     useEffect(() => {
         const ctx = ref?.current?.getContext('2d')
         if (ctx) {
+            const draw = drawer(ctx)
+
             // 1. Clear the canvas
-            ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
+            draw.clear()
 
             // 2. Draw the grid
-            drawGrid(ctx)
+            draw.grid()
 
             // 3. Draw the Shapes
-            drawShapes(ctx, shapes)
+            draw.shapes(shapes)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [shapes])

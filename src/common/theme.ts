@@ -38,7 +38,12 @@ const theme = {
             background: 'transparent',
             color: 'secondary',
             fontWeight: 'heading',
+            cursor: 'pointer',
             mx: 1,
+            '&:disabled': {
+                cursor: 'not-allowed',
+                opacity: 0.6,
+            },
         },
     },
     textStyles: {
