@@ -264,37 +264,37 @@ export const getShape = (props: ShapeProps): Omit<Shape, 'uid'> => {
     switch (type) {
         case 'O':
             return {
-                color: 'yellow',
+                color: '#ffff00', // 'yellow',
                 ...props,
                 ...getOShape(location, quarter),
             }
         case 'T':
             return {
-                color: 'purple',
+                color: '#7c4dff', // 'purple',
                 ...props,
                 ...getTShape(location, quarter),
             }
         case 'L':
             return {
-                color: 'orange',
+                color: '#ff9100', // 'orange',
                 ...props,
                 ...getLShape(location, quarter),
             }
         case 'J':
             return {
-                color: 'blue',
+                color: '#2979ff', // 'blue',
                 ...props,
                 ...getJShape(location, quarter),
             }
         case 'Z':
             return {
-                color: 'red',
+                color: '#ff5555', // 'red',
                 ...props,
                 ...getZShape(location, quarter),
             }
         case 'S':
             return {
-                color: 'green',
+                color: '#00e676', // 'green',
                 ...props,
                 ...getSShape(location, quarter),
             }
@@ -302,7 +302,7 @@ export const getShape = (props: ShapeProps): Omit<Shape, 'uid'> => {
         default:
             // Case 'I' as default
             return {
-                color: 'cyan',
+                color: '#18ffff', // 'cyan',
                 ...props,
                 ...getIShape(location, quarter),
             }
