@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { FC, Fragment } from 'react'
-import { Grid, jsx } from 'theme-ui'
+import { Grid, jsx, Text, Flex } from 'theme-ui'
 import { useSelector } from 'react-redux'
 
 import { RootState } from '../../app/store'
@@ -17,10 +17,21 @@ const Game: FC<{}> = () => {
 
     return (
         <Fragment>
-            <MenuBar />
-
-            <Grid columns={1}>
+            <Grid columns={2}>
                 <Canvas shapes={shapes} />
+                <Flex
+                    sx={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <MenuBar />
+                    <Text sx={{ textAlign: 'center', mb: 3 }}>
+                        Use keyboard arrows to move shapes and ArrowTop to
+                        rotate
+                    </Text>
+                </Flex>
             </Grid>
         </Fragment>
     )

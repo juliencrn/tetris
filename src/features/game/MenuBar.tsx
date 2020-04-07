@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { jsx, Flex, Button } from 'theme-ui'
-import { FC, Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { FC, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { RootState } from '../../app/store'
 import { Styles } from '../../common/types'
 
 import { getRandomShapeOptions } from './utils'
@@ -25,13 +24,6 @@ const style: Styles = {
 
 const MenuBar: FC<{}> = () => {
     const dispatch = useDispatch()
-    const game = useSelector((state: RootState) => state.game)
-
-    const canMove = !!game?.currentShape
-
-    /*
-     * Game control functions
-     */
 
     const handleNewShape = () => {
         dispatch(createShape(getRandomShapeOptions()))
@@ -41,50 +33,48 @@ const MenuBar: FC<{}> = () => {
         dispatch(resetGame())
     }
 
-    /*
-     * Game Play functions
-     */
-
-    const handleRotate = () => {
-        dispatch(rotate())
+    enum KeyCode {
+        left = 37,
+        right = 39,
+        down = 40,
+        top = 38,
     }
 
-    const handleMoveLeft = () => {
-        dispatch(moveLeft())
+    function downHandler({ keyCode }: { keyCode: number }) {
+        switch (keyCode) {
+            case KeyCode.left:
+                dispatch(moveLeft())
+                break
+            case KeyCode.right:
+                dispatch(moveRight())
+                break
+            case KeyCode.down:
+                dispatch(moveBottom())
+                break
+            case KeyCode.top:
+                dispatch(rotate())
+                break
+
+            default:
+                break
+        }
     }
 
-    const handleMoveRight = () => {
-        dispatch(moveRight())
-    }
-
-    const handleMoveBottom = () => {
-        dispatch(moveBottom())
-    }
+    // Add event listeners
+    useEffect(() => {
+        window.addEventListener('keydown', downHandler)
+        // Remove event listeners on cleanup
+        return () => {
+            window.removeEventListener('keydown', downHandler)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
-        <Fragment>
-            <Flex sx={style.flex}>
-                <Button disabled={!canMove} onClick={handleRotate}>
-                    Rotate
-                </Button>
-                <Button disabled={!canMove} onClick={handleMoveLeft}>
-                    Left
-                </Button>
-                <Button disabled={!canMove} onClick={handleMoveRight}>
-                    Right
-                </Button>
-                <Button disabled={!canMove} onClick={handleMoveBottom}>
-                    Go Bottom
-                </Button>
-            </Flex>
-
-            <Flex sx={style.flex}>
-                <Button>Play</Button>
-                <Button>Pause</Button>
-                <Button onClick={handleReset}>Reset</Button>
-                <Button onClick={handleNewShape}>New Shape</Button>
-            </Flex>
-        </Fragment>
+        <Flex sx={style.flex}>
+            <Button onClick={handleReset}>Reset</Button>
+            <Button onClick={handleNewShape}>New Shape</Button>
+        </Flex>
     )
 }
 
