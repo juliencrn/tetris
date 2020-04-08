@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, SxStyleProp } from 'theme-ui'
-import { FC, useEffect, useRef } from 'react'
+import { FC, useEffect, useRef, memo } from 'react'
 
 import { canvasSize } from '../../common/config'
 import { Shape } from '../../common/types'
@@ -41,4 +41,4 @@ const Canvas: FC<CanvasProps> = ({ shapes }) => {
     return <canvas sx={style} ref={ref} {...canvasSize} />
 }
 
-export default Canvas
+export default memo(Canvas)

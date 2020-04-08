@@ -4,7 +4,13 @@ import { Shape, Drawn, ShapeOptions } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
 
 import { getShape } from './shapes'
-import { incrementQuarter, makeShapeDrawn, filterDrawn } from './utils'
+import * as data from './data'
+import {
+    incrementQuarter,
+    makeShapeDrawn,
+    filterDrawn,
+    shapeTouchedDrawn,
+} from './utils'
 
 interface UserState {
     currentShape?: Shape
@@ -15,9 +21,9 @@ interface UserState {
 
 const initialState: UserState = {
     currentShape: undefined,
-    shapes: [],
+    shapes: data.shapes,
     isPlaying: false,
-    drawn: [],
+    drawn: data.drawn,
 }
 
 const game = createSlice({
@@ -102,6 +108,11 @@ const game = createSlice({
                 }),
             }
 
+            // check if the shape collides other shape
+            if (shapeTouchedDrawn(shape, state.drawn, 'left')) {
+                return state
+            }
+
             // Update drawn (remove current then push new location)
             const filteredDrawn = filterDrawn(shape.uid, state.drawn)
             const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
@@ -133,6 +144,11 @@ const game = createSlice({
                 }),
             }
 
+            // check if the shape collides other shape
+            if (shapeTouchedDrawn(shape, state.drawn, 'right')) {
+                return state
+            }
+
             // Update drawn (remove current then push new location)
             const filteredDrawn = filterDrawn(shape.uid, state.drawn)
             const drawn = [...filteredDrawn, ...makeShapeDrawn(shape)]
@@ -149,6 +165,14 @@ const game = createSlice({
 
             // Bottom touched
             if (location.y >= canvasSize.height - state.currentShape.height) {
+                return state
+            }
+
+            // check if the shape collides other shape
+            if (shapeTouchedDrawn(state.currentShape, state.drawn, 'bottom')) {
+                // Archive then remove the currentShape
+                state.shapes = [...state.shapes, state.currentShape]
+                state.currentShape = undefined
                 return state
             }
 

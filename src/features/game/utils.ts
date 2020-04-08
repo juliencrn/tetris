@@ -64,3 +64,35 @@ export const getRandomShapeOptions = (): ShapeOptions => ({
     type: getRandomShapeType(),
     quarter: '0',
 })
+
+// Check if one-of shape rects is in drawn cases
+export const shapeTouchedDrawn = (
+    shape: Shape,
+    drawn: Drawn[],
+    direction: 'left' | 'right' | 'bottom',
+): boolean => {
+    let matches = false
+    shape.rects.forEach((rect) => {
+        // 1. Simulate the next position
+        let location = rect
+        switch (direction) {
+            case 'left':
+                location = { ...rect, x: rect.x - unit }
+                break
+            case 'bottom':
+                location = { ...rect, y: rect.y + unit }
+                break
+            default:
+                break
+        }
+
+        // 2. check if the new location is drawn or free
+        const rectKey = makeLocationKey(location as Location)
+        filterDrawn(shape.uid, drawn).forEach(({ key }) => {
+            if (rectKey === key) {
+                matches = true
+            }
+        })
+    })
+    return matches
+}

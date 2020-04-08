@@ -40,7 +40,7 @@ const MenuBar: FC<{}> = () => {
         top = 38,
     }
 
-    function downHandler({ keyCode }: { keyCode: number }) {
+    function handleKeyPress({ keyCode }: { keyCode: number }) {
         switch (keyCode) {
             case KeyCode.left:
                 dispatch(moveLeft())
@@ -62,10 +62,10 @@ const MenuBar: FC<{}> = () => {
 
     // Add event listeners
     useEffect(() => {
-        window.addEventListener('keydown', downHandler)
+        window.addEventListener('keydown', handleKeyPress)
         // Remove event listeners on cleanup
         return () => {
-            window.removeEventListener('keydown', downHandler)
+            window.removeEventListener('keydown', handleKeyPress)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

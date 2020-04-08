@@ -35,7 +35,7 @@ function App() {
             <Container>
                 <div sx={styles.paper}>
                     <Heading sx={styles.title} color="primary">
-                        Tetris game
+                        Tetris
                     </Heading>
 
                     <Game />
