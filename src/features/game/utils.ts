@@ -66,25 +66,11 @@ export const getRandomShapeOptions = (): ShapeOptions => ({
 })
 
 // Check if one-of shape rects is in drawn cases
-export const shapeTouchedDrawn = (
-    shape: Shape,
-    drawn: Drawn[],
-    direction: 'left' | 'right' | 'bottom',
-): boolean => {
+export const shapeTouchedDrawn = (shape: Shape, drawn: Drawn[]): boolean => {
     let matches = false
     shape.rects.forEach((rect) => {
         // 1. Simulate the next position
-        let location = rect
-        switch (direction) {
-            case 'left':
-                location = { ...rect, x: rect.x - unit }
-                break
-            case 'bottom':
-                location = { ...rect, y: rect.y + unit }
-                break
-            default:
-                break
-        }
+        const location = rect
 
         // 2. check if the new location is drawn or free
         const rectKey = makeLocationKey(location as Location)
@@ -95,4 +81,38 @@ export const shapeTouchedDrawn = (
         })
     })
     return matches
+}
+
+export const incrementLocation = (
+    location: Location,
+    axis: 'x' | 'y',
+): Location => {
+    if (axis === 'x') {
+        return {
+            ...location,
+            x: location.x + unit,
+        }
+    } else {
+        return {
+            ...location,
+            y: location.y + unit,
+        }
+    }
+}
+
+export const decrementLocation = (
+    location: Location,
+    axis: 'x' | 'y',
+): Location => {
+    if (axis === 'x') {
+        return {
+            ...location,
+            x: location.x - unit,
+        }
+    } else {
+        return {
+            ...location,
+            y: location.y - unit,
+        }
+    }
 }

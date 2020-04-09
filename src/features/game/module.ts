@@ -5,7 +5,13 @@ import { unit, canvasSize } from '../../common/config'
 
 import { getShape } from './shapes'
 import * as data from './data'
-import { incrementQuarter, makeShapeDrawn, shapeTouchedDrawn } from './utils'
+import {
+    incrementQuarter,
+    makeShapeDrawn,
+    shapeTouchedDrawn,
+    decrementLocation,
+    incrementLocation,
+} from './utils'
 
 interface UserState {
     currentShape?: Shape
@@ -43,9 +49,11 @@ const game = createSlice({
             // Set the new shape from payload
             state.currentShape = shape
         },
+
         resetGame() {
             return initialState
         },
+
         rotate(state) {
             if (!state?.currentShape) {
                 return state
@@ -69,8 +77,15 @@ const game = createSlice({
                 }),
             }
 
+            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+
+            if (isCollides) {
+                return state
+            }
+
             state.currentShape = shape
         },
+
         moveLeft(state) {
             if (!state?.currentShape) {
                 return state
@@ -79,29 +94,27 @@ const game = createSlice({
             const { location } = state.currentShape
 
             // Left wall touched
-            if (location.x <= 0) {
-                return state
-            }
+            const isLeft = location.x <= 0
 
             // Update location
             const shape: Shape = {
                 uid: state.currentShape.uid,
                 ...getShape({
                     ...state.currentShape,
-                    location: {
-                        ...location,
-                        x: location.x - unit,
-                    },
+                    location: decrementLocation(location, 'x'),
                 }),
             }
 
             // check if the shape collides other shape
-            if (shapeTouchedDrawn(shape, state.drawn, 'left')) {
+            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+
+            if (isLeft || isCollides) {
                 return state
             }
 
             state.currentShape = shape
         },
+
         moveRight(state) {
             if (!state?.currentShape) {
                 return state
@@ -110,29 +123,28 @@ const game = createSlice({
             const { location } = state.currentShape
 
             // Right wall touched
-            if (location.x >= canvasSize.width - state.currentShape.width) {
-                return state
-            }
+            const isRight =
+                location.x >= canvasSize.width - state.currentShape.width
 
             // Update location
             const shape: Shape = {
                 uid: state.currentShape.uid,
                 ...getShape({
                     ...state.currentShape,
-                    location: {
-                        ...location,
-                        x: location.x + unit,
-                    },
+                    location: incrementLocation(location, 'x'),
                 }),
             }
 
             // check if the shape collides other shape
-            if (shapeTouchedDrawn(shape, state.drawn, 'right')) {
+            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+
+            if (isRight || isCollides) {
                 return state
             }
 
             state.currentShape = shape
         },
+
         moveBottom(state) {
             if (!state?.currentShape) {
                 return state
@@ -144,12 +156,17 @@ const game = createSlice({
             const isBottom =
                 location.y >= canvasSize.height - state.currentShape.height
 
+            // Update location
+            const shape: Shape = {
+                uid: state.currentShape.uid,
+                ...getShape({
+                    ...state.currentShape,
+                    location: incrementLocation(location, 'y'),
+                }),
+            }
+
             // check if the shape collides other shape
-            const isCollides = shapeTouchedDrawn(
-                state.currentShape,
-                state.drawn,
-                'bottom',
-            )
+            const isCollides = shapeTouchedDrawn(shape, state.drawn)
 
             // Archive then remove the currentShape
             if (isBottom || isCollides) {
@@ -160,18 +177,6 @@ const game = createSlice({
                 ]
                 state.currentShape = undefined
                 return state
-            }
-
-            // Update location
-            const shape: Shape = {
-                uid: state.currentShape.uid,
-                ...getShape({
-                    ...state.currentShape,
-                    location: {
-                        ...location,
-                        y: location.y + unit,
-                    },
-                }),
             }
 
             state.currentShape = shape

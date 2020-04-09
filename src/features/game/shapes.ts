@@ -186,7 +186,7 @@ const getJShape: GetShapeRect = ({ x, y }, quarter = '0') => {
                     { x, y },
                     { x, y: y + unit },
                     { x, y: y + 2 * unit },
-                    { x: x + unit, y: y + 2 * unit },
+                    { x: x + unit, y },
                 ],
             }
         default:
