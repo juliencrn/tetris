@@ -1,19 +1,8 @@
 /** @jsx jsx */
 import { jsx, Flex, Button } from 'theme-ui'
-import { FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { FC } from 'react'
 
 import { Styles } from '../../common/types'
-
-import { getRandomShapeOptions } from './utils'
-import {
-    createShape,
-    resetGame,
-    rotate,
-    moveLeft,
-    moveRight,
-    moveBottom,
-} from './module'
 
 const style: Styles = {
     flex: {
@@ -22,58 +11,21 @@ const style: Styles = {
     },
 }
 
-const MenuBar: FC<{}> = () => {
-    const dispatch = useDispatch()
+export interface MenuBarProps {
+    isPlaying: boolean
+    onHandleReset: () => void
+    onTogglePlay: () => void
+}
 
-    const handleNewShape = () => {
-        dispatch(createShape(getRandomShapeOptions()))
-    }
-
-    const handleReset = () => {
-        dispatch(resetGame())
-    }
-
-    enum KeyCode {
-        left = 37,
-        right = 39,
-        down = 40,
-        top = 38,
-    }
-
-    function handleKeyPress({ keyCode }: { keyCode: number }) {
-        switch (keyCode) {
-            case KeyCode.left:
-                dispatch(moveLeft())
-                break
-            case KeyCode.right:
-                dispatch(moveRight())
-                break
-            case KeyCode.down:
-                dispatch(moveBottom())
-                break
-            case KeyCode.top:
-                dispatch(rotate())
-                break
-
-            default:
-                break
-        }
-    }
-
-    // Add event listeners
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyPress)
-        // Remove event listeners on cleanup
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+const MenuBar: FC<MenuBarProps> = (props) => {
+    const { isPlaying, onHandleReset, onTogglePlay } = props
 
     return (
         <Flex sx={style.flex}>
-            <Button onClick={handleReset}>Reset</Button>
-            <Button onClick={handleNewShape}>New Shape</Button>
+            <Button onClick={onHandleReset}>New Game</Button>
+            <Button onClick={onTogglePlay}>
+                {isPlaying ? 'Pause' : 'Play'}
+            </Button>
         </Flex>
     )
 }

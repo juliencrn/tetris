@@ -28,7 +28,7 @@ const theme = {
     },
     layout: {
         container: {
-            maxWidth: 920,
+            maxWidth: 800,
             padding: '0 1rem',
         },
     },

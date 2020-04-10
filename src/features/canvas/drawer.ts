@@ -29,12 +29,19 @@ const drawGrid = (ctx: any) => () => {
 // Draw one shape
 const drawShape = (ctx: any) => (shape: Shape): void => {
     const { color, rects } = shape
-    if (color) {
-        ctx.fillStyle = color
-    }
+    const line = 0.5
+
     if (rects) {
         rects.forEach(({ x, y }) => {
+            // the shape square background as border
+            ctx.fillStyle = theme.colors.purple
             ctx.fillRect(x, y, unit, unit)
+
+            // the shape square with padding
+            if (color) {
+                ctx.fillStyle = color
+            }
+            ctx.fillRect(x + line, y + line, unit - line * 2, unit - line * 2)
         })
     }
 }

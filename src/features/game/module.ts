@@ -4,7 +4,6 @@ import { Shape, Drawn, ShapeOptions } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
 
 import { getShape } from './shapes'
-import * as data from './data'
 import {
     incrementQuarter,
     makeShapeDrawn,
@@ -22,9 +21,9 @@ interface UserState {
 
 const initialState: UserState = {
     currentShape: undefined,
-    shapes: data.shapes,
+    shapes: [],
     isPlaying: false,
-    drawn: data.drawn,
+    drawn: [],
 }
 
 const game = createSlice({
