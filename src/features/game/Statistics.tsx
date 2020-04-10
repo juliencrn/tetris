@@ -40,10 +40,12 @@ const Statistics: FC<StatisticsProps> = (props) => {
     return (
         <Box sx={style.root}>
             <table sx={style.table}>
-                <Row label="Level" value={level} />
-                <Row label="Score" value={score} />
-                <Row label="Lines" value={lines} />
-                <Row label="Time" value={time} />
+                <tbody>
+                    <Row label="Level" value={level} />
+                    <Row label="Score" value={score} />
+                    <Row label="Lines" value={lines} />
+                    <Row label="Time" value={time} />
+                </tbody>
             </table>
         </Box>
     )

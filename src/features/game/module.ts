@@ -14,25 +14,49 @@ import {
 
 interface UserState {
     currentShape?: Shape
-    isPlaying: boolean
+    isGaming: boolean
+    isTimeRunning: boolean
     shapes: Shape[]
     drawn: Drawn[]
+    time: number
 }
 
 const initialState: UserState = {
     currentShape: undefined,
     shapes: [],
-    isPlaying: false,
+    isGaming: false, // The game, will reset all
+    isTimeRunning: false, // Play/pause
     drawn: [],
+    time: 0,
 }
 
 const game = createSlice({
     name: 'game',
     initialState,
     reducers: {
+        setTime(state, { payload }: PayloadAction<number>) {
+            state.time = payload
+        },
+        play(state) {
+            state.isTimeRunning = true
+        },
+
+        pause(state) {
+            state.isTimeRunning = false
+        },
+
+        newGame(state) {
+            state.isGaming = true
+            state.isTimeRunning = true
+        },
+
+        resetGame() {
+            return initialState
+        },
+
         createShape(state, { payload }: PayloadAction<ShapeOptions>) {
-            if (!state.isPlaying) {
-                state.isPlaying = true
+            if (!state.isGaming) {
+                state.isGaming = true
             }
 
             // Archive current shape in "static shapes array"
@@ -47,10 +71,6 @@ const game = createSlice({
 
             // Set the new shape from payload
             state.currentShape = shape
-        },
-
-        resetGame() {
-            return initialState
         },
 
         rotate(state) {
@@ -74,6 +94,7 @@ const game = createSlice({
                               }
                             : location,
                 }),
+                prevRects: state.currentShape.rects,
             }
 
             const isCollides = shapeTouchedDrawn(shape, state.drawn)
@@ -102,6 +123,7 @@ const game = createSlice({
                     ...state.currentShape,
                     location: decrementLocation(location, 'x'),
                 }),
+                prevRects: state.currentShape.rects,
             }
 
             // check if the shape collides other shape
@@ -132,6 +154,7 @@ const game = createSlice({
                     ...state.currentShape,
                     location: incrementLocation(location, 'x'),
                 }),
+                prevRects: state.currentShape.rects,
             }
 
             // check if the shape collides other shape
@@ -162,6 +185,7 @@ const game = createSlice({
                     ...state.currentShape,
                     location: incrementLocation(location, 'y'),
                 }),
+                prevRects: state.currentShape.rects,
             }
 
             // check if the shape collides other shape
@@ -184,8 +208,12 @@ const game = createSlice({
 })
 
 export const {
-    createShape,
+    setTime,
+    play,
+    pause,
+    newGame,
     resetGame,
+    createShape,
     rotate,
     moveLeft,
     moveRight,

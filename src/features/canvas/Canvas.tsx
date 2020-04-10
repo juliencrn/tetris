@@ -15,28 +15,44 @@ const style: SxStyleProp = {
 }
 
 export interface CanvasProps {
-    shapes: Shape[]
+    currentShape?: Shape
+    needClear: boolean
 }
 
-const Canvas: FC<CanvasProps> = ({ shapes }) => {
+const Canvas: FC<CanvasProps> = ({ currentShape, needClear }) => {
     const ref = useRef<HTMLCanvasElement>(null)
 
+    // Work on all the canvas grid
     useEffect(() => {
         const ctx = ref?.current?.getContext('2d')
         if (ctx) {
             const draw = drawer(ctx)
 
-            // 1. Clear the canvas
-            draw.clear()
+            // Clear the canvas
+            if (needClear) {
+                draw.clearAll()
+            }
+        }
+    }, [needClear])
 
-            // 2. Draw the grid
-            draw.grid()
+    // Update specific part of canvas
+    useEffect(() => {
+        const ctx = ref?.current?.getContext('2d')
+        if (ctx) {
+            const draw = drawer(ctx)
 
-            // 3. Draw the Shapes
-            draw.shapes(shapes)
+            // 1. Remove the prev position
+            if (currentShape?.prevRects) {
+                draw.clear(currentShape.prevRects)
+            }
+
+            // 3. Draw the new Shape
+            if (currentShape) {
+                draw.shape(currentShape)
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [shapes])
+    }, [currentShape])
 
     return <canvas sx={style} ref={ref} {...canvasSize} />
 }

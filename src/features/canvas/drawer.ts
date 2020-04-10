@@ -1,14 +1,21 @@
 import { rgba } from 'polished'
 
-import { Shape } from '../../common/types'
+import { Shape, Location } from '../../common/types'
 import theme from '../../common/theme'
 import { unit, canvasSize, cols, rows } from '../../common/config'
 
 const { width, height } = canvasSize
 
-// Clean the canvas
-const clear = (ctx: any) => () =>
+// Clean all the canvas
+const clearAll = (ctx: any) => () =>
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
+
+// Clean part of the canvas
+const clear = (ctx: any) => (rects: Location[]) => {
+    rects.forEach(({ x, y }) => {
+        ctx.clearRect(x, y, unit, unit)
+    })
+}
 
 // Draw the Grid
 const drawGrid = (ctx: any) => () => {
@@ -57,7 +64,9 @@ const drawShapes = (ctx: any) => (shapes: Shape[]): void => {
 
 const drawer = (ctx: any) => ({
     clear: clear(ctx),
+    clearAll: clearAll(ctx),
     grid: drawGrid(ctx),
+    shape: drawShape(ctx),
     shapes: drawShapes(ctx),
 })
 

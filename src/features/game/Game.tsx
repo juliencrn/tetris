@@ -1,17 +1,30 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useEffect } from 'react'
 import { Grid, jsx, Text, Flex, Box, Heading } from 'theme-ui'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState } from '../../app/store'
-import MenuBar from './MenuBar'
-import Canvas from '../canvas/Canvas'
-import { createShape, resetGame } from './module'
-import { getRandomShapeOptions } from './utils'
-import Statistics from './Statistics'
+
+import useInterval from '../../common/hooks/useInterval'
 import { Styles } from '../../common/types'
 import { canvasSize } from '../../common/config'
+
+import MenuBar from './MenuBar'
 import Keyboard from './Keyboard'
+import Statistics from './Statistics'
+import Canvas from '../canvas/Canvas'
+
+import { getRandomShapeOptions } from './utils'
+import {
+    createShape,
+    resetGame,
+    newGame,
+    play,
+    pause,
+    setTime,
+    moveBottom,
+} from './module'
 
 const style: Styles = {
     canvasWrap: {
@@ -47,36 +60,45 @@ const style: Styles = {
 }
 
 const Game: FC<{}> = () => {
-    const game = useSelector((state: RootState) => state.game)
+    // todo : make game-over dynamic
+    const isGameOver = false
+
+    const { isGaming, isTimeRunning, currentShape, time } = useSelector(
+        (state: RootState) => state.game,
+    )
     const dispatch = useDispatch()
 
     const createNewShape = () => {
         dispatch(createShape(getRandomShapeOptions()))
     }
 
-    const handleReset = () => {
-        dispatch(resetGame())
+    const toggleGaming = () => {
+        dispatch(isGaming ? resetGame() : newGame())
     }
 
     const togglePlay = () => {
-        console.log('toggle play')
+        dispatch(isTimeRunning ? pause() : play())
     }
 
-    // When a shape collides the bottom
-    // It's archived and removed
-    // Here create new current shape if needed
-    // ! Ce comportement va changer avec le minuteur
-    if (typeof game?.currentShape === 'undefined') {
-        createNewShape()
-    }
+    // Launch the timer
+    useInterval(
+        () => {
+            dispatch(setTime(time + 1))
+        },
+        isTimeRunning ? 1000 : null,
+    )
 
-    // merge current and others shapes
-    const shapes = game?.currentShape
-        ? [game?.currentShape, ...game.shapes]
-        : game.shapes
+    // Move shape to bottom using timer
+    useEffect(() => {
+        dispatch(moveBottom())
+    }, [time])
 
-    // todo : make game-over dynamic
-    const isGameOver = false
+    // Create the new shape
+    useEffect(() => {
+        if (isGaming && typeof currentShape === 'undefined') {
+            createNewShape()
+        }
+    }, [isGaming, currentShape])
 
     return (
         <Fragment>
@@ -85,7 +107,10 @@ const Game: FC<{}> = () => {
             <Grid columns={2}>
                 <Flex sx={style.canvasWrap}>
                     <Box mx="auto" opacity={isGameOver ? 0.5 : 1}>
-                        <Canvas shapes={shapes} />
+                        <Canvas
+                            needClear={!isGaming}
+                            currentShape={currentShape}
+                        />
                     </Box>
                     {isGameOver && (
                         <Heading sx={style.gameOver}>Game over</Heading>
@@ -94,9 +119,10 @@ const Game: FC<{}> = () => {
 
                 <Flex as="aside" sx={style.aside}>
                     <MenuBar
-                        isPlaying={game.isPlaying}
+                        isGaming={isGaming}
+                        isTimeRunning={isTimeRunning}
                         onTogglePlay={togglePlay}
-                        onHandleReset={handleReset}
+                        onToggleGaming={toggleGaming}
                     />
 
                     <Box sx={style.instructionsWrap}>
@@ -109,7 +135,7 @@ const Game: FC<{}> = () => {
                         </Text>
                     </Box>
 
-                    <Statistics level={2} time={74} />
+                    <Statistics level={2} time={time} />
                 </Flex>
             </Grid>
         </Fragment>

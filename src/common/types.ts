@@ -25,6 +25,7 @@ export interface Shape extends ShapeOptions {
     width: number
     height: number
     rects: Location[]
+    prevRects?: Location[]
 }
 
 export interface Drawn {

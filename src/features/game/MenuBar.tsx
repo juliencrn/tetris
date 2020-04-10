@@ -12,19 +12,22 @@ const style: Styles = {
 }
 
 export interface MenuBarProps {
-    isPlaying: boolean
-    onHandleReset: () => void
+    isGaming: boolean
+    isTimeRunning: boolean
+    onToggleGaming: () => void
     onTogglePlay: () => void
 }
 
 const MenuBar: FC<MenuBarProps> = (props) => {
-    const { isPlaying, onHandleReset, onTogglePlay } = props
+    const { isGaming, isTimeRunning, onToggleGaming, onTogglePlay } = props
 
     return (
         <Flex sx={style.flex}>
-            <Button onClick={onHandleReset}>New Game</Button>
+            <Button onClick={onToggleGaming}>
+                {isGaming ? 'Reset Game' : 'New Game'}
+            </Button>
             <Button onClick={onTogglePlay}>
-                {isPlaying ? 'Pause' : 'Play'}
+                {isTimeRunning ? 'Pause' : 'Play'}
             </Button>
         </Flex>
     )
