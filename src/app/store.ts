@@ -1,20 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers } from 'redux'
 
-// import { loadState, saveState } from './persistStore'
-import rootReducer from './rootReducer'
+import game from '../features/game/module'
 
-// const persistedState = loadState()
+const rootReducer = combineReducers({
+    game,
+})
 
 const store = configureStore({
     reducer: rootReducer,
-    // preloadedState: persistedState,
 })
-
-// Persist Partial<Store>
-// store.subscribe(() => {
-//     const { game } = store.getState()
-//     saveState({ game })
-// })
 
 export type RootState = ReturnType<typeof rootReducer>
 export type RootDispatch = typeof store.dispatch
