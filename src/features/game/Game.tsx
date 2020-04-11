@@ -8,7 +8,7 @@ import { RootState } from '../../app/store'
 
 import useInterval from '../../common/hooks/useInterval'
 import { Styles } from '../../common/types'
-import { canvasSize } from '../../common/config'
+import { canvasSize, cols } from '../../common/config'
 
 import MenuBar from './MenuBar'
 import Keyboard from './Keyboard'
@@ -24,6 +24,7 @@ import {
     pause,
     setTime,
     moveBottom,
+    removeLine,
 } from './module'
 
 const style: Styles = {
@@ -63,9 +64,14 @@ const Game: FC<{}> = () => {
     // todo : make game-over dynamic
     const isGameOver = false
 
-    const { isGaming, isTimeRunning, currentShape, time } = useSelector(
-        (state: RootState) => state.game,
-    )
+    const {
+        isGaming,
+        isTimeRunning,
+        currentShape,
+        time,
+        shapes,
+        lines,
+    } = useSelector((state: RootState) => state.game)
     const dispatch = useDispatch()
 
     const createNewShape = () => {
@@ -93,12 +99,32 @@ const Game: FC<{}> = () => {
         dispatch(moveBottom())
     }, [time])
 
+    // Check if has entire line and remove it
+    useEffect(() => {
+        // 1. Count each drawn cases by lines
+        const countByY: Record<string, number> = {}
+        shapes.forEach(({ rects }) => {
+            rects.forEach(({ y }) => {
+                countByY[y] = countByY[y] ? countByY[y] + 1 : 1
+            })
+        })
+
+        // 2. Remove line if all this cases are drawn
+        Object.entries(countByY).forEach((item) => {
+            if (item[1] === cols) {
+                dispatch(removeLine(Number(item[0])))
+            }
+        })
+    }, [shapes])
+
     // Create the new shape
     useEffect(() => {
         if (isGaming && typeof currentShape === 'undefined') {
             createNewShape()
         }
     }, [isGaming, currentShape])
+
+    const allShapes = currentShape ? [...shapes, currentShape] : shapes
 
     return (
         <Fragment>
@@ -107,10 +133,7 @@ const Game: FC<{}> = () => {
             <Grid columns={2}>
                 <Flex sx={style.canvasWrap}>
                     <Box mx="auto" opacity={isGameOver ? 0.5 : 1}>
-                        <Canvas
-                            needClear={!isGaming}
-                            currentShape={currentShape}
-                        />
+                        <Canvas shapes={allShapes} />
                     </Box>
                     {isGameOver && (
                         <Heading sx={style.gameOver}>Game over</Heading>
@@ -135,7 +158,7 @@ const Game: FC<{}> = () => {
                         </Text>
                     </Box>
 
-                    <Statistics level={2} time={time} />
+                    <Statistics level={2} time={time} lines={lines} />
                 </Flex>
             </Grid>
         </Fragment>

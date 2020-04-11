@@ -3,7 +3,6 @@ import {
     Location,
     Quarter,
     Shape,
-    Drawn,
     ShapeOptions,
     ShapeType,
 } from '../../common/types'
@@ -23,40 +22,10 @@ export function getTheStartLocation(): Location {
     }
 }
 
-// Make a location like x-y (ex: 5-1)
-export const makeLocationKey = ({ x, y }: Location): string =>
-    `${x / unit}-${y / unit}`
-
-// Retrieve Location from this key like x-y (ex: 5-1)
-export const getLocationFromKey = (key: string): Location | false => {
-    try {
-        const arr = key.split('-')
-        const location = {
-            x: Number(arr[0]) * unit,
-            y: Number(arr[1]) * unit,
-        }
-        return location
-    } catch (error) {
-        return false
-    }
-}
-
 // Increment the quarter for rotate shape
 // Set '0' if it is at the last position
 export const incrementQuarter = (quarter: Quarter): Quarter =>
     `${Number(quarter) < 3 ? Number(quarter) + 1 : 0}` as Quarter
-
-// Create the shape drawn array from Shape
-export const makeShapeDrawn = ({ uid, rects }: Shape): Drawn[] =>
-    rects.map((location) => ({
-        location,
-        shapeId: uid,
-        key: makeLocationKey(location),
-    }))
-
-// Exclude drawn location who's match with the uid
-export const filterDrawn = (uid: string, drawn: Drawn[]): Drawn[] =>
-    drawn.filter(({ shapeId }) => shapeId !== uid)
 
 // Create a random ShapeOptions
 export const getRandomShapeOptions = (): ShapeOptions => ({
@@ -66,18 +35,17 @@ export const getRandomShapeOptions = (): ShapeOptions => ({
 })
 
 // Check if one-of shape rects is in drawn cases
-export const shapeTouchedDrawn = (shape: Shape, drawn: Drawn[]): boolean => {
+export const shapeTouchedDrawn = (shape: Shape, shapes: Shape[]): boolean => {
     let matches = false
     shape.rects.forEach((rect) => {
-        // 1. Simulate the next position
-        const location = rect
-
-        // 2. check if the new location is drawn or free
-        const rectKey = makeLocationKey(location as Location)
-        filterDrawn(shape.uid, drawn).forEach(({ key }) => {
-            if (rectKey === key) {
-                matches = true
-            }
+        shapes.map((thisShape) => {
+            thisShape.rects.map((thisRect) => {
+                const hasSameX = thisRect.x === rect.x
+                const hasSameY = thisRect.y === rect.y
+                if (hasSameX && hasSameY) {
+                    matches = true
+                }
+            })
         })
     })
     return matches

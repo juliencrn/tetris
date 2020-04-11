@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { Shape, Drawn, ShapeOptions } from '../../common/types'
+import { Shape, ShapeOptions } from '../../common/types'
 import { unit, canvasSize } from '../../common/config'
 
 import { getShape } from './shapes'
 import {
     incrementQuarter,
-    makeShapeDrawn,
     shapeTouchedDrawn,
     decrementLocation,
     incrementLocation,
@@ -17,8 +16,8 @@ interface UserState {
     isGaming: boolean
     isTimeRunning: boolean
     shapes: Shape[]
-    drawn: Drawn[]
     time: number
+    lines: number
 }
 
 const initialState: UserState = {
@@ -26,8 +25,8 @@ const initialState: UserState = {
     shapes: [],
     isGaming: false, // The game, will reset all
     isTimeRunning: false, // Play/pause
-    drawn: [],
     time: 0,
+    lines: 0,
 }
 
 const game = createSlice({
@@ -38,6 +37,9 @@ const game = createSlice({
             state.time = payload
         },
         play(state) {
+            if (!state.isGaming) {
+                state.isGaming = true
+            }
             state.isTimeRunning = true
         },
 
@@ -48,6 +50,22 @@ const game = createSlice({
         newGame(state) {
             state.isGaming = true
             state.isTimeRunning = true
+        },
+
+        removeLine(state, { payload }: PayloadAction<number>) {
+            // Filter & update shapes
+            state.lines++
+            state.shapes = state.shapes.map((shape) => {
+                const rects = shape.rects
+                    .filter(({ y }) => y !== payload)
+                    .map(({ y, x }) => {
+                        if (y < payload) {
+                            return { x, y: y + unit }
+                        }
+                        return { x, y }
+                    })
+                return { ...shape, rects }
+            })
         },
 
         resetGame() {
@@ -97,7 +115,7 @@ const game = createSlice({
                 prevRects: state.currentShape.rects,
             }
 
-            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+            const isCollides = shapeTouchedDrawn(shape, state.shapes)
 
             if (isCollides) {
                 return state
@@ -127,7 +145,7 @@ const game = createSlice({
             }
 
             // check if the shape collides other shape
-            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+            const isCollides = shapeTouchedDrawn(shape, state.shapes)
 
             if (isLeft || isCollides) {
                 return state
@@ -158,7 +176,7 @@ const game = createSlice({
             }
 
             // check if the shape collides other shape
-            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+            const isCollides = shapeTouchedDrawn(shape, state.shapes)
 
             if (isRight || isCollides) {
                 return state
@@ -189,15 +207,11 @@ const game = createSlice({
             }
 
             // check if the shape collides other shape
-            const isCollides = shapeTouchedDrawn(shape, state.drawn)
+            const isCollides = shapeTouchedDrawn(shape, state.shapes)
 
             // Archive then remove the currentShape
             if (isBottom || isCollides) {
                 state.shapes = [...state.shapes, state.currentShape]
-                state.drawn = [
-                    ...state.drawn,
-                    ...makeShapeDrawn(state.currentShape),
-                ]
                 state.currentShape = undefined
                 return state
             }
@@ -212,6 +226,7 @@ export const {
     play,
     pause,
     newGame,
+    removeLine,
     resetGame,
     createShape,
     rotate,

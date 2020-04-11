@@ -10,13 +10,6 @@ const { width, height } = canvasSize
 const clearAll = (ctx: any) => () =>
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
 
-// Clean part of the canvas
-const clear = (ctx: any) => (rects: Location[]) => {
-    rects.forEach(({ x, y }) => {
-        ctx.clearRect(x, y, unit, unit)
-    })
-}
-
 // Draw the Grid
 const drawGrid = (ctx: any) => () => {
     const lineSize = 0.5
@@ -63,10 +56,8 @@ const drawShapes = (ctx: any) => (shapes: Shape[]): void => {
 }
 
 const drawer = (ctx: any) => ({
-    clear: clear(ctx),
     clearAll: clearAll(ctx),
     grid: drawGrid(ctx),
-    shape: drawShape(ctx),
     shapes: drawShapes(ctx),
 })
 
