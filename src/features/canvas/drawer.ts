@@ -1,6 +1,6 @@
 import { rgba } from 'polished'
 
-import { Shape, Location } from '../../common/types'
+import { Shape } from '../../common/types'
 import theme from '../../common/theme'
 import { unit, canvasSize, cols, rows } from '../../common/config'
 

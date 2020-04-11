@@ -38,8 +38,8 @@ export const getRandomShapeOptions = (): ShapeOptions => ({
 export const shapeTouchedDrawn = (shape: Shape, shapes: Shape[]): boolean => {
     let matches = false
     shape.rects.forEach((rect) => {
-        shapes.map((thisShape) => {
-            thisShape.rects.map((thisRect) => {
+        shapes.forEach((thisShape) => {
+            thisShape.rects.forEach((thisRect) => {
                 const hasSameX = thisRect.x === rect.x
                 const hasSameY = thisRect.y === rect.y
                 if (hasSameX && hasSameY) {

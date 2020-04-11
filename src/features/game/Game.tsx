@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { FC, Fragment, useEffect } from 'react'
-import { Grid, jsx, Flex, Box, Heading } from 'theme-ui'
+import { Grid, jsx, Flex, Heading } from 'theme-ui'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState } from '../../app/store'
