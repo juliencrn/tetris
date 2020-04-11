@@ -1,7 +1,8 @@
 /** @jsx jsx */
-import { FC } from 'react'
+import { FC, useState, useEffect } from 'react'
 import { jsx, Box } from 'theme-ui'
 import { Styles } from '../../common/types'
+import useInterval from '../../common/hooks/useInterval'
 
 const style: Styles = {
     root: {
@@ -15,12 +16,13 @@ const style: Styles = {
 }
 
 export interface StatisticsProps {
+    isTimeRunning: boolean
+    isGaming: boolean
     level?: number
     score?: number
     bestScore?: number
     lines?: number
     bestLines?: number
-    time?: number
 }
 
 interface RowProps {
@@ -36,7 +38,25 @@ const Row: FC<RowProps> = ({ label, value = 0 }) => (
 )
 
 const Statistics: FC<StatisticsProps> = (props) => {
-    const { level, score, lines, time } = props
+    const [time, setTime] = useState(0)
+    const { isGaming, isTimeRunning, level, score, lines } = props
+
+    // Reset timer
+    useEffect(() => {
+        if (time && !isGaming) {
+            setTime(0)
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isGaming])
+
+    useInterval(
+        () => {
+            setTime(time + 1)
+        },
+        isTimeRunning ? 1000 : null,
+    )
+
     return (
         <Box sx={style.root}>
             <table sx={style.table}>

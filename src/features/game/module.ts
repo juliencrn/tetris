@@ -16,7 +16,7 @@ interface UserState {
     isGaming: boolean
     isTimeRunning: boolean
     shapes: Shape[]
-    time: number
+    tick: number
     lines: number
 }
 
@@ -25,7 +25,7 @@ const initialState: UserState = {
     shapes: [],
     isGaming: false, // The game, will reset all
     isTimeRunning: false, // Play/pause
-    time: 0,
+    tick: 0,
     lines: 0,
 }
 
@@ -34,7 +34,7 @@ const game = createSlice({
     initialState,
     reducers: {
         setTime(state, { payload }: PayloadAction<number>) {
-            state.time = payload
+            state.tick = payload
         },
         play(state) {
             if (!state.isGaming) {

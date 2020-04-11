@@ -67,15 +67,15 @@ const Game: FC<{}> = () => {
     // Launch the timer
     useInterval(
         () => {
-            dispatch(actions.setTime(game.time + 1))
+            dispatch(actions.setTime(game.tick + 1))
         },
-        game.isTimeRunning ? 1000 : null,
+        game.isTimeRunning ? 600 : null,
     )
 
     // Move shape to bottom using timer
     useEffect(() => {
         dispatch(actions.moveBottom())
-    }, [game.time])
+    }, [game.tick])
 
     // Check if has entire line and remove it
     useEffect(() => {
@@ -122,7 +122,12 @@ const Game: FC<{}> = () => {
                         secondary="Use keyboard arrows to move shapes and ArrowTop to rotate."
                     />
 
-                    <Statistics level={2} time={game.time} lines={game.lines} />
+                    <Statistics
+                        isTimeRunning={game.isTimeRunning}
+                        isGaming={game.isGaming}
+                        level={1}
+                        lines={game.lines}
+                    />
                 </Flex>
             </Grid>
         </Fragment>
