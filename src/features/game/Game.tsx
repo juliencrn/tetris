@@ -42,8 +42,6 @@ const style: Styles = {
 }
 
 const Game: FC<{}> = () => {
-    // todo : make game-over dynamic
-    const isGameOver = false
     const game = useSelector((state: RootState) => state.game)
     const dispatch = useDispatch()
 
@@ -121,12 +119,12 @@ const Game: FC<{}> = () => {
 
     return (
         <Fragment>
-            <Keyboard />
+            {game.isTimeRunning && !game.gameOver && <Keyboard />}
 
             <Grid columns={2}>
-                <Flex opacity={isGameOver ? 0.5 : 1} sx={style.canvasWrap}>
+                <Flex opacity={game.gameOver ? 0.5 : 1} sx={style.canvasWrap}>
                     <Canvas shapes={allShapes} />
-                    {isGameOver && (
+                    {game.gameOver && (
                         <Heading sx={style.gameOver}>Game over</Heading>
                     )}
                 </Flex>

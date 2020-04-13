@@ -21,6 +21,7 @@ interface UserState {
     score: number
     level: number
     tickSpeed: number
+    gameOver: boolean
 }
 
 const initialState: UserState = {
@@ -33,6 +34,7 @@ const initialState: UserState = {
     score: 0,
     level: 1,
     tickSpeed: 600,
+    gameOver: false,
 }
 
 const game = createSlice({
@@ -42,6 +44,7 @@ const game = createSlice({
         setTime(state, { payload }: PayloadAction<number>) {
             state.tick = payload
         },
+
         play(state) {
             if (!state.isGaming) {
                 state.isGaming = true
@@ -109,6 +112,18 @@ const game = createSlice({
                 ...getShape(payload),
                 uid: state.shapes.length.toString(),
             }
+
+            // check if the shape collides other shape
+            const isCollides = shapeTouchedDrawn(shape, state.shapes)
+
+            // If collides on createShape
+            // Set to game-over
+            if (isCollides) {
+                state.isTimeRunning = false
+                state.gameOver = true
+            }
+
+            console.log({ isCollides })
 
             // Set the new shape from payload
             state.currentShape = shape
