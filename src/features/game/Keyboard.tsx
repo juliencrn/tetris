@@ -1,7 +1,13 @@
 import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { rotate, moveLeft, moveRight, moveBottom } from './module'
+import {
+    rotate,
+    moveLeft,
+    moveRight,
+    moveBottom,
+    incrementScore,
+} from './module'
 
 enum KeyCode {
     left = 37,
@@ -23,6 +29,7 @@ const Keyboard: FC<{}> = () => {
                 break
             case KeyCode.down:
                 dispatch(moveBottom())
+                dispatch(incrementScore(2))
                 break
             case KeyCode.top:
                 dispatch(rotate())

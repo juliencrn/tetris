@@ -18,6 +18,9 @@ interface UserState {
     shapes: Shape[]
     tick: number
     lines: number
+    score: number
+    level: number
+    tickSpeed: number
 }
 
 const initialState: UserState = {
@@ -27,6 +30,9 @@ const initialState: UserState = {
     isTimeRunning: false, // Play/pause
     tick: 0,
     lines: 0,
+    score: 0,
+    level: 1,
+    tickSpeed: 600,
 }
 
 const game = createSlice({
@@ -52,10 +58,13 @@ const game = createSlice({
             state.isTimeRunning = true
         },
 
+        incrementScore(state, { payload }: PayloadAction<number>) {
+            state.score += payload * state.level
+        },
+
         removeLine(state, { payload }: PayloadAction<number>) {
-            // Filter & update shapes
-            state.lines++
-            state.shapes = state.shapes.map((shape) => {
+            // Remove all the shape for removed lines
+            const shapes = state.shapes.map((shape) => {
                 const rects = shape.rects
                     .filter(({ y }) => y !== payload)
                     .map(({ y, x }) => {
@@ -66,6 +75,20 @@ const game = createSlice({
                     })
                 return { ...shape, rects }
             })
+
+            // Update lines counter
+            const lines = state.lines + 1
+
+            // Check if need level-up
+            const level = Math.floor(lines / 10) + 1
+            if (level !== state.level) {
+                state.tickSpeed *= 0.9
+            }
+
+            // Update state
+            state.lines = lines
+            state.level = level
+            state.shapes = shapes
         },
 
         resetGame() {
@@ -226,6 +249,7 @@ export const {
     play,
     pause,
     newGame,
+    incrementScore,
     removeLine,
     resetGame,
     createShape,

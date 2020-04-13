@@ -69,7 +69,7 @@ const Game: FC<{}> = () => {
         () => {
             dispatch(actions.setTime(game.tick + 1))
         },
-        game.isTimeRunning ? 600 : null,
+        game.isTimeRunning ? game.tickSpeed : null,
     )
 
     // Move shape to bottom using timer
@@ -79,15 +79,37 @@ const Game: FC<{}> = () => {
 
     // Check if has entire line and remove it
     useEffect(() => {
+        let removedLines = 0
         const countByY: Record<string, number> = {}
         game.shapes.forEach(({ rects }) => {
             rects.forEach(({ y }) => {
                 countByY[y] = countByY[y] ? countByY[y] + 1 : 1
                 if (countByY[y] === cols) {
                     dispatch(actions.removeLine(y))
+                    removedLines += 1
                 }
             })
         })
+
+        // increment the score
+        if (removedLines) {
+            switch (removedLines) {
+                case 1:
+                    dispatch(actions.incrementScore(100))
+                    break
+                case 2:
+                    dispatch(actions.incrementScore(300))
+                    break
+                case 3:
+                    dispatch(actions.incrementScore(500))
+                    break
+                case 4:
+                    dispatch(actions.incrementScore(800))
+                    break
+                default:
+                    break
+            }
+        }
     }, [game.shapes])
 
     // Create the new shape
@@ -125,7 +147,8 @@ const Game: FC<{}> = () => {
                     <Statistics
                         isTimeRunning={game.isTimeRunning}
                         isGaming={game.isGaming}
-                        level={1}
+                        score={game.score}
+                        level={game.level}
                         lines={game.lines}
                     />
                 </Flex>
